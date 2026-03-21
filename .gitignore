@@ -1,0 +1,29 @@
+# Environment files
+backend/.env
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+backend/venv/
+
+# Django
+backend/media/
+backend/staticfiles/
+
+# Node
+node_modules/
+dist/
+build/
+
+# OS/editor
+.DS_Store
+.idea/
+.vscode/

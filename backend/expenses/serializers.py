@@ -19,6 +19,7 @@ class ExpenseSerializer(serializers.ModelSerializer):
     employee = UserSerializer(read_only=True)
     comments = ApprovalCommentSerializer(many=True, read_only=True)
     receipt_url = serializers.SerializerMethodField()
+    receipt = serializers.FileField(required=True, allow_null=False)
 
     class Meta:
         model = Expense
