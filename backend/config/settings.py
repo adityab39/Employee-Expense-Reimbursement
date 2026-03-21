@@ -104,7 +104,7 @@ if USE_S3:
     AWS_DEFAULT_ACL = None
     AWS_S3_FILE_OVERWRITE = False
     STORAGES["default"] = {
-        "BACKEND": "storages.backends.s3boto3.S3Storage",
+        "BACKEND": "storages.backends.s3boto3.S3Boto3Storage",
     }
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
