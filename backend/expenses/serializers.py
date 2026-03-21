@@ -82,4 +82,8 @@ class DashboardSerializer(serializers.Serializer):
 
 
 def invalidate_dashboard_cache(user_id):
-    cache.delete(f"dashboard:{user_id}")
+    try:
+        cache.delete(f"dashboard:{user_id}")
+    except Exception:
+        # Local development should still work even if Redis is unavailable.
+        pass
