@@ -284,7 +284,8 @@ textarea {
   color: var(--ink);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 1rem;
   border-right: 1px solid rgba(16, 38, 32, 0.08);
 }
 

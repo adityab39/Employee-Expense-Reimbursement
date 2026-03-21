@@ -57,6 +57,7 @@ export default function DashboardLayout() {
             <NavLink
               key={item.to}
               to={item.to}
+              end
               className={({ isActive }) => (isActive ? "nav-link active" : "nav-link")}
             >
               <span className="nav-icon">{item.icon}</span>
@@ -64,8 +65,6 @@ export default function DashboardLayout() {
             </NavLink>
           ))}
         </nav>
-
-        <div className="sidebar-footer-note">Expense workflow workspace</div>
       </aside>
 
       <main className="main-panel">
