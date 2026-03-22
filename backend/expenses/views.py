@@ -53,6 +53,11 @@ class ExpenseViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save()
 
+    def perform_destroy(self, instance):
+        employee_id = instance.employee_id
+        instance.delete()
+        invalidate_dashboard_cache(employee_id)
+
     @action(detail=False, methods=["get"], permission_classes=[IsManagerOrAdmin], url_path="pending")
     def pending(self, request):
         queryset = self.get_queryset().filter(status=Expense.Status.PENDING)

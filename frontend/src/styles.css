@@ -387,6 +387,11 @@ textarea {
   gap: 1rem;
   min-height: 116px;
   margin-bottom: 1rem;
+  margin-left: -2rem;
+  margin-right: -2rem;
+  padding: 0 2rem;
+  background: linear-gradient(90deg, #0d6b57 0%, #0a4f42 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .topbar-title {
@@ -394,6 +399,7 @@ textarea {
   font-size: 1.65rem;
   line-height: 1.1;
   font-weight: 800;
+  color: white;
 }
 
 .profile-menu-wrap {
@@ -405,11 +411,12 @@ textarea {
   align-items: center;
   gap: 0.9rem;
   border: 0;
-  background: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.14);
   padding: 0.5rem 0.75rem;
   border-radius: 18px;
-  box-shadow: var(--shadow);
+  box-shadow: 0 16px 40px rgba(4, 19, 15, 0.18);
   min-height: 74px;
+  backdrop-filter: blur(10px);
 }
 
 .profile-avatar {
@@ -418,9 +425,10 @@ textarea {
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: linear-gradient(180deg, #0d6b57, #09493d);
+  background: rgba(255, 255, 255, 0.18);
   color: white;
   font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .profile-copy {
@@ -433,16 +441,17 @@ textarea {
 .profile-copy strong {
   font-size: 0.98rem;
   line-height: 1.15;
+  color: white;
 }
 
 .profile-copy span {
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.72);
   font-size: 0.8rem;
   text-transform: capitalize;
 }
 
 .profile-chevron {
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.7);
   font-size: 1rem;
 }
 
