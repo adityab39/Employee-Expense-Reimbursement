@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import ExpenseTable from "../components/ExpenseTable";
 import PageHeader from "../components/PageHeader";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
 const filters = [
@@ -13,6 +14,7 @@ const filters = [
 ];
 
 export default function ExpensesPage() {
+  const { user } = useAuth();
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
@@ -22,7 +24,9 @@ export default function ExpensesPage() {
     try {
       const endpoint = selectedFilter === "all" ? "/expenses/" : `/expenses/?status=${selectedFilter}`;
       const { data } = await api.get(endpoint);
-      setExpenses(data.results || []);
+      const allExpenses = data.results || [];
+      const ownExpenses = allExpenses.filter((expense) => expense.employee?.id === user?.id);
+      setExpenses(ownExpenses);
     } finally {
       setLoading(false);
     }
@@ -30,7 +34,7 @@ export default function ExpensesPage() {
 
   useEffect(() => {
     loadExpenses();
-  }, [activeFilter]);
+  }, [activeFilter, user?.id]);
 
   return (
     <div className="content-stack">

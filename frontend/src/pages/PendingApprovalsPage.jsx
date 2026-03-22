@@ -24,9 +24,7 @@ export default function PendingApprovalsPage() {
   return (
     <div className="content-stack">
       <PageHeader
-        eyebrow="Pending Queue"
-        title="Requests waiting on manager action"
-        description="Use this queue to review supporting details and move submissions forward."
+        eyebrow="Requests Waiting On Manager Action"
       />
 
       {loading ? (

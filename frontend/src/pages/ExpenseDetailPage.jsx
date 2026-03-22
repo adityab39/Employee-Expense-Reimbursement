@@ -31,10 +31,10 @@ export default function ExpenseDetailPage() {
   async function handleReview(action) {
     setSubmitting(true);
     try {
-      const endpoint = action === "comment" ? "comment" : action;
-      const { data } = await api.post(`/expenses/${expenseId}/${endpoint}/`, { comment });
-      setExpense((current) => (action === "comment" ? { ...current, comments: [...current.comments, data] } : data));
+      const { data } = await api.post(`/expenses/${expenseId}/${action}/`, { comment });
+      setExpense(data);
       setComment("");
+      navigate("/manager/dashboard");
     } finally {
       setSubmitting(false);
     }
@@ -63,7 +63,8 @@ export default function ExpenseDetailPage() {
     return <div className="screen-message">Expense not found.</div>;
   }
 
-  const canReview = user?.role === "manager" || user?.role === "admin";
+  const canReview =
+    (user?.role === "manager" || user?.role === "admin") && expense.status === "pending";
   const canManageExpense =
     user?.role === "employee" && expense.employee.id === user?.id && expense.status === "pending";
 
@@ -136,14 +137,24 @@ export default function ExpenseDetailPage() {
         <article className="editor-card">
           <h3>Review history</h3>
           {expense.comments.length ? (
-            <div className="comment-stack">
+            <div className="comment-stack review-history-stack">
               {expense.comments.map((item) => (
                 <div key={item.id} className="comment-card">
-                  <div className="comment-meta">
-                    <strong>{item.reviewer.email}</strong>
-                    <span>{item.action}</span>
+                  <div className="review-line">
+                    <span>Manager name :</span>
+                    <strong>
+                      {`${item.reviewer.first_name || ""} ${item.reviewer.last_name || ""}`.trim() ||
+                        item.reviewer.email}
+                    </strong>
                   </div>
-                  <p>{item.comment}</p>
+                  <div className="review-line">
+                    <span>Status :</span>
+                    <strong className="status-text">{item.action}</strong>
+                  </div>
+                  <div className="review-line">
+                    <span>Comment :</span>
+                    <strong>{item.comment}</strong>
+                  </div>
                 </div>
               ))}
             </div>
@@ -161,14 +172,6 @@ export default function ExpenseDetailPage() {
             <textarea rows="4" value={comment} onChange={(event) => setComment(event.target.value)} />
           </label>
           <div className="button-row">
-            <button
-              type="button"
-              className="ghost-button"
-              onClick={() => handleReview("comment")}
-              disabled={submitting || !comment}
-            >
-              Add Comment
-            </button>
             <button
               type="button"
               className="secondary-button"

@@ -54,8 +54,7 @@ export default function UserDashboardPage() {
 
       <section>
         <PageHeader
-          title="Recent submissions"
-          description="A quick look at your latest expense activity."
+          eyebrow="Recent Submissions"
         />
         <ExpenseTable expenses={expenses.slice(0, 5)} />
       </section>

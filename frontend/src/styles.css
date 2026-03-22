@@ -509,7 +509,7 @@ textarea {
   letter-spacing: 0.12em;
 }
 
-.content-stack > .page-header .eyebrow {
+.content-stack .page-header .eyebrow {
   font-size: 1.15rem;
   letter-spacing: 0.14em;
 }
@@ -537,6 +537,22 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.stat-card.clickable {
+  cursor: pointer;
+  transition: transform 120ms ease, box-shadow 120ms ease, border-color 120ms ease,
+    background 120ms ease;
+}
+
+.stat-card.clickable:hover {
+  transform: translateY(-2px);
+}
+
+.stat-card.active {
+  border-color: rgba(13, 107, 87, 0.24);
+  background: rgba(242, 251, 247, 0.95);
+  box-shadow: 0 22px 48px rgba(14, 44, 37, 0.12);
 }
 
 .stat-card span {
@@ -730,13 +746,43 @@ tbody tr:last-child td {
 }
 
 .comment-card {
-  padding: 1rem;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
 }
 
 .comment-meta {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.review-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.review-line span {
+  color: var(--muted);
+  min-width: 160px;
+}
+
+.review-line strong {
+  font-weight: 800;
+  text-align: right;
+}
+
+.review-history-stack .comment-card:last-child .review-line:last-child {
+  border-bottom: 0;
+}
+
+.status-text {
+  text-transform: capitalize;
 }
 
 .empty-state {

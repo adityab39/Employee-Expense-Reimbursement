@@ -6,20 +6,40 @@ import PageHeader from "../components/PageHeader";
 import StatCard from "../components/StatCard";
 import api from "../services/api";
 
+const views = {
+  total: {
+    title: "Total Expenses",
+    matcher: () => true,
+  },
+  pending: {
+    title: "Pending Review",
+    matcher: (expense) => expense.status === "pending",
+  },
+  approved: {
+    title: "Total Approved",
+    matcher: (expense) => expense.status === "approved",
+  },
+  rejected: {
+    title: "Total Rejected",
+    matcher: (expense) => expense.status === "rejected",
+  },
+};
+
 export default function ManagerDashboardPage() {
   const [dashboard, setDashboard] = useState(null);
-  const [pendingExpenses, setPendingExpenses] = useState([]);
+  const [allExpenses, setAllExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeView, setActiveView] = useState("pending");
 
   useEffect(() => {
     async function loadManagerData() {
       try {
-        const [dashboardResponse, pendingResponse] = await Promise.all([
+        const [dashboardResponse, expensesResponse] = await Promise.all([
           api.get("/dashboard/"),
-          api.get("/expenses/pending/"),
+          api.get("/expenses/"),
         ]);
         setDashboard(dashboardResponse.data);
-        setPendingExpenses(pendingResponse.data.results || []);
+        setAllExpenses(expensesResponse.data.results || []);
       } finally {
         setLoading(false);
       }
@@ -32,12 +52,12 @@ export default function ManagerDashboardPage() {
     return <div className="screen-message">Loading manager dashboard...</div>;
   }
 
+  const filteredExpenses = allExpenses.filter(views[activeView].matcher);
+
   return (
     <div className="content-stack">
       <PageHeader
-        eyebrow="Manager Command View"
-        title="See what needs a decision today"
-        description="Focus on pending approvals, keep reimbursement velocity healthy, and review supporting documentation."
+        eyebrow="Manager View"
         actions={
           <Link className="primary-button" to="/manager/pending">
             Review pending
@@ -46,10 +66,33 @@ export default function ManagerDashboardPage() {
       />
 
       <section className="stats-grid">
-        <StatCard label="Total visible expenses" value={dashboard?.total_expenses ?? 0} />
-        <StatCard label="Pending review" value={dashboard?.pending_count ?? 0} tone="pending" />
-        <StatCard label="Approved" value={dashboard?.approved_count ?? 0} tone="approved" />
-        <StatCard label="Rejected" value={dashboard?.rejected_count ?? 0} tone="rejected" />
+        <StatCard
+          label="Total visible expenses"
+          value={dashboard?.total_expenses ?? 0}
+          onClick={() => setActiveView("total")}
+          isActive={activeView === "total"}
+        />
+        <StatCard
+          label="Pending review"
+          value={dashboard?.pending_count ?? 0}
+          tone="pending"
+          onClick={() => setActiveView("pending")}
+          isActive={activeView === "pending"}
+        />
+        <StatCard
+          label="Approved"
+          value={dashboard?.approved_count ?? 0}
+          tone="approved"
+          onClick={() => setActiveView("approved")}
+          isActive={activeView === "approved"}
+        />
+        <StatCard
+          label="Rejected"
+          value={dashboard?.rejected_count ?? 0}
+          tone="rejected"
+          onClick={() => setActiveView("rejected")}
+          isActive={activeView === "rejected"}
+        />
       </section>
 
       <section className="hero-card">
@@ -59,11 +102,8 @@ export default function ManagerDashboardPage() {
       </section>
 
       <section>
-        <PageHeader
-          title="Latest pending approvals"
-          description="Jump straight into the newest requests requiring manager action."
-        />
-        <ExpenseTable expenses={pendingExpenses.slice(0, 5)} showEmployee />
+        <PageHeader eyebrow={views[activeView].title} />
+        <ExpenseTable expenses={filteredExpenses} showEmployee />
       </section>
     </div>
   );
