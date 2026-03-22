@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
 import ExpenseTable from "../components/ExpenseTable";
 import PageHeader from "../components/PageHeader";
 import StatCard from "../components/StatCard";
@@ -37,13 +35,6 @@ export default function UserDashboardPage() {
     <div className="content-stack">
       <PageHeader
         eyebrow="Employee Overview"
-        title="Keep every expense moving"
-        description="Monitor submission volume, reimbursement status, and the latest uploaded receipts."
-        actions={
-          <Link className="primary-button" to="/expenses/new">
-            Submit expense
-          </Link>
-        }
       />
 
       <section className="stats-grid">
@@ -58,11 +49,6 @@ export default function UserDashboardPage() {
           <span className="eyebrow">Reimbursable total</span>
           <h3>${dashboard?.total_amount ?? "0.00"}</h3>
           <p>Based on all currently submitted expenses visible to your account.</p>
-        </div>
-        <div className="hero-card accent-card">
-          <span className="eyebrow">Next action</span>
-          <h3>Review your pending items</h3>
-          <p>Pending expenses can still be edited before a manager reviews them.</p>
         </div>
       </section>
 

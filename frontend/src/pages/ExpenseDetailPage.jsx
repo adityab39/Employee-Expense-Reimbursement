@@ -69,6 +69,11 @@ export default function ExpenseDetailPage() {
 
   return (
     <div className="content-stack">
+      <div>
+        <Link className="back-link" to="/expenses">
+          ← Back to My Expenses
+        </Link>
+      </div>
       <PageHeader
         eyebrow={`Expense #${expense.id}`}
         title={expense.title}
@@ -97,11 +102,13 @@ export default function ExpenseDetailPage() {
 
       <section className="detail-grid">
         <article className="editor-card">
-          <h3>Submission details</h3>
           <dl className="detail-list">
             <div>
               <dt>Employee</dt>
-              <dd>{expense.employee.email}</dd>
+              <dd>
+                {`${expense.employee.first_name || ""} ${expense.employee.last_name || ""}`.trim() ||
+                  expense.employee.email}
+              </dd>
             </div>
             <div>
               <dt>Amount</dt>

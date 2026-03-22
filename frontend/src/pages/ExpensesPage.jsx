@@ -36,8 +36,6 @@ export default function ExpensesPage() {
     <div className="content-stack">
       <PageHeader
         eyebrow="Expense Library"
-        title="Every claim, all in one view"
-        description="Filter by status, review receipt links, and jump into any submission."
         actions={
           <Link className="primary-button" to="/expenses/new">
             Add expense

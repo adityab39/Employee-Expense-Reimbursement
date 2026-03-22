@@ -249,6 +249,15 @@ textarea {
   font-weight: 800;
 }
 
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent-dark);
+  font-weight: 800;
+  margin-bottom: 0.1rem;
+}
+
 .form-error,
 .form-success {
   padding: 0.9rem 1rem;
@@ -311,15 +320,18 @@ textarea {
 .sidebar-brand-block {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
   padding: 1.5rem;
+  min-height: 116px;
   border-bottom: 1px solid rgba(16, 38, 32, 0.08);
-  background: rgba(255, 255, 255, 0.65);
+  background: linear-gradient(180deg, #0d6b57, #09493d);
+  text-align: center;
 }
 
 .sidebar-brand-block h1 {
   margin: 0;
   font-size: 1.35rem;
+  color: white;
 }
 
 .nav-stack {
@@ -356,7 +368,7 @@ textarea {
 }
 
 .main-panel {
-  padding: 1.5rem 2rem 2rem;
+  padding: 0 2rem 2rem;
 }
 
 .sidebar-footer-note {
@@ -373,12 +385,15 @@ textarea {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  min-height: 116px;
+  margin-bottom: 1rem;
 }
 
 .topbar-title {
   margin: 0;
-  font-size: 1.9rem;
+  font-size: 1.65rem;
+  line-height: 1.1;
+  font-weight: 800;
 }
 
 .profile-menu-wrap {
@@ -394,6 +409,7 @@ textarea {
   padding: 0.5rem 0.75rem;
   border-radius: 18px;
   box-shadow: var(--shadow);
+  min-height: 74px;
 }
 
 .profile-avatar {
@@ -484,6 +500,11 @@ textarea {
   letter-spacing: 0.12em;
 }
 
+.content-stack > .page-header .eyebrow {
+  font-size: 1.15rem;
+  letter-spacing: 0.14em;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -539,6 +560,55 @@ textarea {
 .hero-card,
 .editor-card {
   padding: 1.5rem;
+}
+
+.expense-form {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 252, 250, 0.92)),
+    rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(13, 107, 87, 0.08);
+}
+
+.expense-form label {
+  color: #20312d;
+  font-size: 1.05rem;
+}
+
+.expense-form input,
+.expense-form textarea,
+.expense-form select {
+  border-radius: 20px;
+  border: 1px solid rgba(13, 107, 87, 0.1);
+  background: rgba(252, 254, 253, 0.96);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: border-color 120ms ease, box-shadow 120ms ease, background 120ms ease;
+}
+
+.expense-form input:focus,
+.expense-form textarea:focus,
+.expense-form select:focus {
+  outline: none;
+  border-color: rgba(13, 107, 87, 0.45);
+  box-shadow: 0 0 0 4px rgba(13, 107, 87, 0.1);
+  background: white;
+}
+
+.expense-form textarea {
+  min-height: 220px;
+}
+
+.expense-form input[type="file"] {
+  padding: 0.8rem;
+}
+
+.expense-form input[type="file"]::file-selector-button {
+  margin-right: 0.9rem;
+  border: 0;
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  background: rgba(13, 107, 87, 0.12);
+  color: var(--accent-dark);
+  font-weight: 800;
 }
 
 .accent-card {

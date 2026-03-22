@@ -114,8 +114,8 @@ export default function SubmitExpensePage() {
   return (
     <div className="content-stack">
       <PageHeader
-        eyebrow={isEditMode ? "Edit Submission" : "New Submission"}
-        title={isEditMode ? "Update your pending expense" : "Attach the receipt and send it forward"}
+        eyebrow={isEditMode ? "Edit Submission" : "Attach the receipt and send it forward"}
+        title={isEditMode ? "Update your pending expense" : undefined}
         description={
           isEditMode
             ? "You can adjust the details of a pending expense before it reaches final review."
@@ -123,7 +123,7 @@ export default function SubmitExpensePage() {
         }
       />
 
-      <form className="editor-card form-grid" onSubmit={handleSubmit}>
+      <form className="editor-card form-grid expense-form" onSubmit={handleSubmit}>
         <label>
           Title
           <input name="title" value={form.title} onChange={handleChange} required />

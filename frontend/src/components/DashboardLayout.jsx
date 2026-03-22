@@ -45,11 +45,7 @@ export default function DashboardLayout() {
     <div className="app-shell">
       <aside className="sidebar">
         <div className="sidebar-brand-block">
-          <div className="brand-mark">ER</div>
-          <div>
-            <h1>Expense Desk</h1>
-            <p className="sidebar-copy">Track approvals with clarity</p>
-          </div>
+          <h1>Expense Desk</h1>
         </div>
 
         <nav className="nav-stack">
@@ -70,8 +66,7 @@ export default function DashboardLayout() {
       <main className="main-panel">
         <header className="topbar">
           <div>
-            <span className="eyebrow">Workspace</span>
-            <h2 className="topbar-title">Dashboard</h2>
+            <h2 className="topbar-title">Workspace</h2>
           </div>
 
           <div className="profile-menu-wrap" ref={menuRef}>
