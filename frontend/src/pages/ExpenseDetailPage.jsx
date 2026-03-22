@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import PageHeader from "../components/PageHeader";
 import StatusBadge from "../components/StatusBadge";
@@ -8,6 +8,7 @@ import api from "../services/api";
 
 export default function ExpenseDetailPage() {
   const { expenseId } = useParams();
+  const navigate = useNavigate();
   const { user } = useAuth();
   const [expense, setExpense] = useState(null);
   const [comment, setComment] = useState("");
@@ -39,6 +40,21 @@ export default function ExpenseDetailPage() {
     }
   }
 
+  async function handleDelete() {
+    const confirmed = window.confirm("Delete this pending expense?");
+    if (!confirmed) {
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await api.delete(`/expenses/${expenseId}/`);
+      navigate("/expenses");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   if (loading) {
     return <div className="screen-message">Loading expense details...</div>;
   }
@@ -48,6 +64,8 @@ export default function ExpenseDetailPage() {
   }
 
   const canReview = user?.role === "manager" || user?.role === "admin";
+  const canManageExpense =
+    user?.role === "employee" && expense.employee.id === user?.id && expense.status === "pending";
 
   return (
     <div className="content-stack">
@@ -55,7 +73,26 @@ export default function ExpenseDetailPage() {
         eyebrow={`Expense #${expense.id}`}
         title={expense.title}
         description={expense.description}
-        actions={<StatusBadge status={expense.status} />}
+        actions={
+          <div className="button-row">
+            <StatusBadge status={expense.status} />
+            {canManageExpense ? (
+              <>
+                <Link className="ghost-button" to={`/expenses/${expense.id}/edit`}>
+                  Edit
+                </Link>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={handleDelete}
+                  disabled={submitting}
+                >
+                  Delete
+                </button>
+              </>
+            ) : null}
+          </div>
+        }
       />
 
       <section className="detail-grid">

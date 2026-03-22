@@ -255,6 +255,13 @@ textarea {
   border-radius: 16px;
 }
 
+.field-help {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
 .form-error {
   background: #fee5e5;
   color: #9b2626;
@@ -454,9 +461,13 @@ textarea {
 
 .page-header {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.page-actions {
+  padding-bottom: 0.45rem;
 }
 
 .page-header h2 {

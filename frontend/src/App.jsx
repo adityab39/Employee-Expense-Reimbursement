@@ -59,6 +59,7 @@ export default function App() {
         <Route path="dashboard" element={<UserDashboardPage />} />
         <Route path="expenses" element={<ExpensesPage />} />
         <Route path="expenses/new" element={<SubmitExpensePage />} />
+        <Route path="expenses/:expenseId/edit" element={<SubmitExpensePage />} />
         <Route path="expenses/:expenseId" element={<ExpenseDetailPage />} />
         <Route
           path="manager/dashboard"

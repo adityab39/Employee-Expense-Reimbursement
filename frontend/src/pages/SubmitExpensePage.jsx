@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import PageHeader from "../components/PageHeader";
+import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
 const categories = [
@@ -13,7 +14,10 @@ const categories = [
 ];
 
 export default function SubmitExpensePage() {
+  const { expenseId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const isEditMode = Boolean(expenseId);
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -23,6 +27,41 @@ export default function SubmitExpensePage() {
   });
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(isEditMode);
+  const [existingReceiptUrl, setExistingReceiptUrl] = useState("");
+
+  useEffect(() => {
+    async function loadExpense() {
+      if (!isEditMode) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const { data } = await api.get(`/expenses/${expenseId}/`);
+
+        if (data.employee.id !== user?.id || data.status !== "pending") {
+          navigate(`/expenses/${expenseId}`, { replace: true });
+          return;
+        }
+
+        setForm({
+          title: data.title,
+          description: data.description,
+          amount: data.amount,
+          category: data.category,
+          receipt: null,
+        });
+        setExistingReceiptUrl(data.receipt_url || "");
+      } catch {
+        navigate("/expenses", { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadExpense();
+  }, [expenseId, isEditMode, navigate, user?.id]);
 
   function handleChange(event) {
     const { name, value, files } = event.target;
@@ -42,27 +81,46 @@ export default function SubmitExpensePage() {
     payload.append("description", form.description);
     payload.append("amount", form.amount);
     payload.append("category", form.category);
-    payload.append("receipt", form.receipt);
+
+    if (form.receipt) {
+      payload.append("receipt", form.receipt);
+    }
 
     try {
-      const { data } = await api.post("/expenses/", payload, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-      navigate(`/expenses/${data.id}`);
+      const request = isEditMode
+        ? api.patch(`/expenses/${expenseId}/`, payload, {
+            headers: { "Content-Type": "multipart/form-data" },
+          })
+        : api.post("/expenses/", payload, {
+            headers: { "Content-Type": "multipart/form-data" },
+          });
+
+      const { data } = await request;
+      navigate(`/expenses/${isEditMode ? expenseId : data.id}`);
     } catch (requestError) {
       const payloadError = requestError.response?.data;
-      setError(typeof payloadError === "object" ? JSON.stringify(payloadError) : "Upload failed.");
+      setError(
+        typeof payloadError === "object" ? JSON.stringify(payloadError) : "Unable to save expense."
+      );
     } finally {
       setSubmitting(false);
     }
   }
 
+  if (loading) {
+    return <div className="screen-message">Loading expense editor...</div>;
+  }
+
   return (
     <div className="content-stack">
       <PageHeader
-        eyebrow="New Submission"
-        title="Attach the receipt and send it forward"
-        description="Receipts are required so every submission has the supporting documentation needed for review."
+        eyebrow={isEditMode ? "Edit Submission" : "New Submission"}
+        title={isEditMode ? "Update your pending expense" : "Attach the receipt and send it forward"}
+        description={
+          isEditMode
+            ? "You can adjust the details of a pending expense before it reaches final review."
+            : "Receipts are required so every submission has the supporting documentation needed for review."
+        }
       />
 
       <form className="editor-card form-grid" onSubmit={handleSubmit}>
@@ -108,14 +166,28 @@ export default function SubmitExpensePage() {
 
         <label>
           Receipt
-          <input name="receipt" type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleChange} required />
+          <input
+            name="receipt"
+            type="file"
+            accept=".pdf,.jpg,.jpeg,.png"
+            onChange={handleChange}
+            required={!isEditMode}
+          />
+          {isEditMode && existingReceiptUrl ? (
+            <span className="field-help">
+              Leave this empty to keep the current receipt, or upload a new file to replace it.
+            </span>
+          ) : null}
         </label>
 
         {error ? <div className="form-error full-width">{error}</div> : null}
 
-        <div className="full-width">
+        <div className="full-width button-row">
+          <button type="button" className="ghost-button" onClick={() => navigate(-1)}>
+            Cancel
+          </button>
           <button type="submit" className="primary-button" disabled={submitting}>
-            {submitting ? "Submitting..." : "Submit Expense"}
+            {submitting ? (isEditMode ? "Saving..." : "Submitting...") : isEditMode ? "Save Changes" : "Submit Expense"}
           </button>
         </div>
       </form>

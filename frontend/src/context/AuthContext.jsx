@@ -44,7 +44,7 @@ export function AuthProvider({ children }) {
     }
 
     bootstrapAuth();
-  }, []);
+  }, [accessToken]);
 
   function persistSession({ access, refresh, user: nextUser }) {
     setAccessToken(access);
