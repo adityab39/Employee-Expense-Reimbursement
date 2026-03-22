@@ -10,6 +10,7 @@ import LoginPage from "./pages/LoginPage";
 import ManagerDashboardPage from "./pages/ManagerDashboardPage";
 import PendingApprovalsPage from "./pages/PendingApprovalsPage";
 import RegisterPage from "./pages/RegisterPage";
+import StaffDirectoryPage from "./pages/StaffDirectoryPage";
 import SubmitExpensePage from "./pages/SubmitExpensePage";
 import UserDashboardPage from "./pages/UserDashboardPage";
 
@@ -74,6 +75,14 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["manager", "admin"]}>
               <PendingApprovalsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="manager/staff-directory"
+          element={
+            <ProtectedRoute allowedRoles={["manager", "admin"]}>
+              <StaffDirectoryPage />
             </ProtectedRoute>
           }
         />

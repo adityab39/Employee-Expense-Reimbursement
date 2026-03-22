@@ -42,6 +42,14 @@ class User(AbstractUser):
     username = models.CharField(max_length=150, unique=False, blank=True)
     email = models.EmailField(unique=True)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.EMPLOYEE)
+    manager = models.ForeignKey(
+        "self",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="team_members",
+        limit_choices_to={"role": Role.MANAGER},
+    )
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []

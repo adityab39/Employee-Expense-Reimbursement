@@ -29,7 +29,12 @@ export default function LoginPage() {
           : "/dashboard");
       navigate(destination, { replace: true });
     } catch (requestError) {
-      setError(requestError.response?.data?.detail || "Unable to log in with those credentials.");
+      const detail = requestError.response?.data?.detail;
+      setError(
+        detail === "No active account found with the given credentials"
+          ? "Invalid credentials"
+          : detail || "Invalid credentials"
+      );
     } finally {
       setSubmitting(false);
     }

@@ -12,6 +12,7 @@ const employeeNav = [
 const managerNav = [
   { label: "Manager Overview", to: "/manager/dashboard", icon: "◇" },
   { label: "Pending Approvals", to: "/manager/pending", icon: "↗" },
+  { label: "Staff Directory", to: "/manager/staff-directory", icon: "⌘" },
 ];
 
 export default function DashboardLayout() {
@@ -21,9 +22,11 @@ export default function DashboardLayout() {
   const menuRef = useRef(null);
 
   const navItems =
-    user?.role === "manager" || user?.role === "admin"
+    user?.role === "admin"
       ? [...employeeNav, ...managerNav]
-      : employeeNav;
+      : user?.role === "manager"
+        ? [...employeeNav, ...managerNav]
+        : employeeNav;
 
   useEffect(() => {
     function handleClickOutside(event) {

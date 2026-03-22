@@ -59,7 +59,13 @@ class ExpenseSerializer(serializers.ModelSerializer):
         return obj.receipt.url
 
     def create(self, validated_data):
-        expense = Expense.objects.create(employee=self.context["request"].user, **validated_data)
+        employee = self.context["request"].user
+        if employee.role == "employee" and employee.manager_id is None:
+            raise serializers.ValidationError(
+                {"detail": "Your account must be assigned to a manager before submitting expenses."}
+            )
+
+        expense = Expense.objects.create(employee=employee, **validated_data)
         invalidate_dashboard_cache(expense.employee_id)
         return expense
 

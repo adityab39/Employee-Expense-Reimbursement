@@ -8,8 +8,10 @@ class IsManagerOrAdmin(BasePermission):
 
 class IsExpenseOwnerOrReviewer(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.user.role in {"manager", "admin"}:
+        if request.user.role == "admin":
             return True
+        if request.user.role == "manager":
+            return obj.employee.manager_id == request.user.id
         return obj.employee_id == request.user.id
 
 

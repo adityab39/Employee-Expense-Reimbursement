@@ -7,6 +7,9 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from accounts.models import User
+
+from .emails import send_expense_review_email
 from .models import ApprovalComment, Expense
 from .permissions import CanEditOwnPendingExpense, IsExpenseOwnerOrReviewer, IsManagerOrAdmin
 from .serializers import (
@@ -32,6 +35,8 @@ class ExpenseViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if user.role == "employee":
             queryset = queryset.filter(employee=user)
+        elif user.role == "manager":
+            queryset = queryset.filter(employee__manager=user)
 
         status_value = self.request.query_params.get("status")
         if status_value:
@@ -80,6 +85,8 @@ class ExpenseApproveView(APIView):
         serializer.is_valid(raise_exception=True)
 
         expense = generics.get_object_or_404(Expense, pk=pk)
+        if request.user.role == User.Role.MANAGER and expense.employee.manager_id != request.user.id:
+            return Response({"detail": "You can only review expenses for your assigned employees."}, status=403)
         if expense.status != Expense.Status.PENDING:
             return Response(
                 {"detail": "Only pending expenses can be reviewed."},
@@ -98,6 +105,11 @@ class ExpenseApproveView(APIView):
             action=comment_action,
         )
         invalidate_dashboard_cache(expense.employee_id)
+        send_expense_review_email(
+            expense=expense,
+            status_label=expense.get_status_display(),
+            manager_comment=serializer.validated_data["comment"],
+        )
 
         return Response(ExpenseSerializer(expense, context={"request": request}).data)
 
@@ -114,6 +126,8 @@ class ExpenseCommentView(APIView):
         serializer = ExpenseReviewSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         expense = generics.get_object_or_404(Expense, pk=pk)
+        if request.user.role == User.Role.MANAGER and expense.employee.manager_id != request.user.id:
+            return Response({"detail": "You can only review expenses for your assigned employees."}, status=403)
 
         comment = ApprovalComment.objects.create(
             expense=expense,
@@ -139,6 +153,8 @@ class DashboardView(APIView):
         queryset = Expense.objects.all()
         if request.user.role == "employee":
             queryset = queryset.filter(employee=request.user)
+        elif request.user.role == "manager":
+            queryset = queryset.filter(employee__manager=request.user)
 
         summary = queryset.aggregate(
             total_expenses=Count("id"),
